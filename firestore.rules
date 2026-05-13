@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Medicines Collection
+    match /medicines/{medicineId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidMedicine(incoming());
+      allow update: if isVerified() && isValidMedicine(incoming());
+      allow delete: if isVerified(); 
+    }
+
+    function isValidMedicine(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+          && data.stock is int
+          && (data.category == null || data.category is string)
+          && (data.expirationDate == null || data.expirationDate is string);
+    }
+
+    // Patients Collection
+    match /patients/{patientId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidPatient(incoming());
+      allow update: if isVerified() && isValidPatient(incoming());
+      allow delete: if isVerified();
+    }
+
+    function isValidPatient(data) {
+      return data.fullname is string && data.fullname.size() > 0
+          && (data.age == null || data.age is int || data.age is string)
+          && (data.gender == null || data.gender is string)
+          && (data.department == null || data.department is string);
+    }
+
+    // Prescriptions Collection
+    match /prescriptions/{prescriptionId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidPrescription(incoming());
+      allow update: if isVerified() && isValidPrescription(incoming());
+      allow delete: if isVerified();
+    }
+
+    function isValidPrescription(data) {
+      return isValidId(data.patientId) && isValidId(data.medicineId)
+          && data.quantity is int && data.quantity > 0;
+    }
+  }
+}

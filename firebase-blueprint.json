@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "medicine": {
+      "title": "Medicine",
+      "description": "Inventory item representing a medicine available in the clinic.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the medicine" },
+        "category": { "type": "string", "description": "Category (e.g., Antibiotics, Painkillers)" },
+        "stock": { "type": "integer", "description": "Current quantity in stock" },
+        "expirationDate": { "type": "string", "description": "Expiration date in ISO format" },
+        "dateAdded": { "type": "string", "description": "Date the item was first added to inventory" }
+      },
+      "required": ["name", "stock"]
+    },
+    "patient": {
+      "title": "Patient Record",
+      "description": "Detailed log of a patient visit and their information.",
+      "type": "object",
+      "properties": {
+        "fullname": { "type": "string" },
+        "age": { "type": "integer" },
+        "gender": { "type": "string" },
+        "department": { "type": "string" },
+        "complaint": { "type": "string" },
+        "diagnosis": { "type": "string" },
+        "dateVisit": { "type": "string" }
+      },
+      "required": ["fullname"]
+    },
+    "prescription": {
+      "title": "Prescription",
+      "description": "Record of medicine issued to a specific patient.",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "medicineId": { "type": "string" },
+        "quantity": { "type": "integer" },
+        "issuedAt": { "type": "string" }
+      },
+      "required": ["patientId", "medicineId", "quantity"]
+    }
+  },
+  "firestore": {
+    "medicines": {
+      "schema": "medicine",
+      "description": "Global inventory of medicines."
+    },
+    "patients": {
+      "schema": "patient",
+      "description": "Clinic visit logs and patient metadata."
+    },
+    "prescriptions": {
+      "schema": "prescription",
+      "description": "History of medicine issuance."
+    }
+  }
+}

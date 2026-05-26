@@ -411,19 +411,7 @@ export default function Dashboard() {
             </div>
           </Card>
 
-          {/* Quick Action */}
-          <Card className="bg-blue-600 p-5 text-white shadow-lg shadow-blue-100 border-none">
-            <h3 className="text-sm font-bold mb-3">Medication Issuance</h3>
-            <p className="text-[11px] text-blue-100 mb-4 leading-relaxed">Select a patient and the medicine to auto-deduct stock levels from the central inventory.</p>
-            <div className="space-y-3">
-              <Link 
-                to="/prescriptions" 
-                className="w-full py-2 bg-white text-blue-700 text-xs font-bold rounded-lg shadow-sm flex items-center justify-center no-underline hover:bg-slate-50 transition-colors"
-              >
-                Open Dispenser Module
-              </Link>
-            </div>
-          </Card>
+
         </div>
       </div>
     </div>

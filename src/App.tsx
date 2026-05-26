@@ -73,11 +73,13 @@ const Navbar = ({ user }: { user: User }) => {
 
 const ProtectedLayout = ({ children, user }: { children: React.ReactNode, user: User }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isNewPatientLoading, setIsNewPatientLoading] = useState(false);
 
   const confirmLogout = () => {
     setIsLogoutConfirmOpen(false);
@@ -170,194 +172,194 @@ const ProtectedLayout = ({ children, user }: { children: React.ReactNode, user: 
             )}
           </div>
         </div>
+      </aside>
 
-        {/* About System Modal */}
-        <AnimatePresence>
-          {isAboutModalOpen && (
-            <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsAboutModalOpen(false)}
-                className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
-              />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100"
-              >
-                <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">C</div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">System Information</h3>
-                      <p className="text-[10px] text-blue-600 font-bold uppercase tracking-[0.2em] mt-0.5">Version 1.0.4 Stable</p>
-                    </div>
+      {/* About System Modal */}
+      <AnimatePresence>
+        {isAboutModalOpen && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAboutModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100"
+            >
+              <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-200">C</div>
+                  <div>
+                    <h3 className="text-xl font-black text-slate-900 tracking-tight">System Information</h3>
+                    <p className="text-[10px] text-blue-600 font-bold uppercase tracking-[0.2em] mt-0.5">Version 1.0.4 Stable</p>
                   </div>
-                  <button 
-                    onClick={() => setIsAboutModalOpen(false)}
-                    className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400 hover:text-slate-600"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
                 </div>
+                <button 
+                  onClick={() => setIsAboutModalOpen(false)}
+                  className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400 hover:text-slate-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-8 space-y-6 max-h-[60vh] overflow-y-auto bg-slate-50/50">
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    The <strong className="text-slate-900">Campus Clinic Inventory and Patient Records System</strong> is a web-based application designed to help school clinics efficiently manage their daily operations. It allows clinic staff to keep track of medicine inventory, including stock levels, expiration dates, and usage, ensuring that essential supplies are always available. At the same time, the system records patient information such as personal details, complaints, diagnoses, and treatments during each clinic visit.
+                  </p>
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                    Built using PHP, MySQL, HTML, CSS, JavaScript, and Bootstrap, and run through XAMPP, the system provides a simple and organized interface for easy data entry and retrieval. It improves accuracy in record-keeping, reduces manual paperwork, and helps clinic personnel monitor both patient history and medicine usage more effectively.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Modules</p>
+                    <p className="text-xl font-black text-slate-900">4 Core</p>
+                  </div>
+                  <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Architecture</p>
+                    <p className="text-xl font-black text-slate-900 italic">Clinic Hub</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 bg-white border-t border-slate-100">
+                <Button 
+                  className="w-full h-12 font-bold shadow-xl shadow-blue-100" 
+                  variant="primary"
+                  onClick={() => setIsAboutModalOpen(false)}
+                >
+                  Return to Workspace
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Profile Modal */}
+      <AnimatePresence>
+        {isProfileModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsProfileModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+            >
+              <div className="h-24 bg-blue-600 flex items-end justify-center pb-0">
+                <div className="w-20 h-20 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center translate-y-10 overflow-hidden shadow-lg">
+                  {user.photoURL? <img src={user.photoURL} alt="avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <UserIcon className="w-10 h-10 text-slate-300" />}
+                </div>
+              </div>
+              
+              <div className="pt-14 pb-8 px-8 text-center">
+                <h3 className="text-lg font-bold text-slate-900">{user.displayName}</h3>
+                <p className="text-sm text-blue-600 font-semibold">Campus Nurse</p>
+                <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Campus Clinic Staff</p>
                 
-                <div className="p-8 space-y-6 max-h-[60vh] overflow-y-auto bg-slate-50/50">
-                  <div className="space-y-4">
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      The <strong className="text-slate-900">Campus Clinic Inventory and Patient Records System</strong> is a web-based application designed to help school clinics efficiently manage their daily operations. It allows clinic staff to keep track of medicine inventory, including stock levels, expiration dates, and usage, ensuring that essential supplies are always available. At the same time, the system records patient information such as personal details, complaints, diagnoses, and treatments during each clinic visit.
-                    </p>
-                    <p className="text-sm text-slate-600 leading-relaxed font-medium p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
-                      Built using PHP, MySQL, HTML, CSS, JavaScript, and Bootstrap, and run through XAMPP, the system provides a simple and organized interface for easy data entry and retrieval. It improves accuracy in record-keeping, reduces manual paperwork, and helps clinic personnel monitor both patient history and medicine usage more effectively.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Modules</p>
-                      <p className="text-xl font-black text-slate-900">4 Core</p>
+                <div className="mt-8 space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-left">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <Mail className="w-4 h-4 text-slate-400" />
                     </div>
-                    <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Architecture</p>
-                      <p className="text-xl font-black text-slate-900 italic">Clinic Hub</p>
+                    <div className="min-w-0">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Email Address</p>
+                      <p className="text-xs text-slate-600 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-left">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Access Level</p>
+                      <p className="text-xs text-slate-600 font-semibold italic">Authorized Medical Personnel</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 bg-white border-t border-slate-100">
+                <div className="grid grid-cols-2 gap-3 mt-8">
                   <Button 
-                    className="w-full h-12 font-bold shadow-xl shadow-blue-100" 
-                    variant="primary"
-                    onClick={() => setIsAboutModalOpen(false)}
+                    className="h-11 font-bold" 
+                    variant="ghost"
+                    onClick={() => setIsProfileModalOpen(false)}
                   >
-                    Return to Workspace
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* Profile Modal */}
-        <AnimatePresence>
-          {isProfileModalOpen && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsProfileModalOpen(false)}
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-              />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
-              >
-                <div className="h-24 bg-blue-600 flex items-end justify-center pb-0">
-                  <div className="w-20 h-20 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center translate-y-10 overflow-hidden shadow-lg">
-                    {user.photoURL? <img src={user.photoURL} alt="avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <UserIcon className="w-10 h-10 text-slate-300" />}
-                  </div>
-                </div>
-                
-                <div className="pt-14 pb-8 px-8 text-center">
-                  <h3 className="text-lg font-bold text-slate-900">{user.displayName}</h3>
-                  <p className="text-sm text-blue-600 font-semibold">Campus Nurse</p>
-                  <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Campus Clinic Staff</p>
-                  
-                  <div className="mt-8 space-y-3">
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-left">
-                      <div className="p-2 bg-white rounded-lg shadow-sm">
-                        <Mail className="w-4 h-4 text-slate-400" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Email Address</p>
-                        <p className="text-xs text-slate-600 truncate">{user.email}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-left">
-                      <div className="p-2 bg-white rounded-lg shadow-sm">
-                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Access Level</p>
-                        <p className="text-xs text-slate-600 font-semibold italic">Authorized Medical Personnel</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 mt-8">
-                    <Button 
-                      className="h-11 font-bold" 
-                      variant="ghost"
-                      onClick={() => setIsProfileModalOpen(false)}
-                    >
-                      Close
-                    </Button>
-                    <Button 
-                      className="h-11 font-bold bg-rose-50 text-rose-600 hover:bg-rose-100 border-none" 
-                      variant="outline"
-                      onClick={() => {
-                        setIsProfileModalOpen(false);
-                        setIsLogoutConfirmOpen(true);
-                      }}
-                    >
-                      Log Out
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* Logout Confirmation Modal */}
-        <AnimatePresence>
-          {isLogoutConfirmOpen && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsLogoutConfirmOpen(false)}
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-              />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center"
-              >
-                <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <LogOut className="w-8 h-8 text-rose-600" />
-                </div>
-                <h3 className="text-xl font-black text-slate-900">End Session?</h3>
-                <p className="text-slate-500 mt-2 font-medium">Are you sure you want to log out from the Campus Clinic System?</p>
-                
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  <Button 
-                    variant="ghost" 
-                    className="h-12 font-bold"
-                    onClick={() => setIsLogoutConfirmOpen(false)}
-                  >
-                    Stay
+                    Close
                   </Button>
                   <Button 
-                    variant="primary" 
-                    className="h-12 font-bold bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-200"
-                    onClick={confirmLogout}
+                    className="h-11 font-bold bg-rose-50 text-rose-600 hover:bg-rose-100 border-none" 
+                    variant="outline"
+                    onClick={() => {
+                      setIsProfileModalOpen(false);
+                      setIsLogoutConfirmOpen(true);
+                    }}
                   >
                     Log Out
                   </Button>
                 </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-      </aside>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Logout Confirmation Modal */}
+      <AnimatePresence>
+        {isLogoutConfirmOpen && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsLogoutConfirmOpen(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center"
+            >
+              <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <LogOut className="w-8 h-8 text-rose-600" />
+              </div>
+              <h3 className="text-xl font-black text-slate-900">End Session?</h3>
+              <p className="text-slate-500 mt-2 font-medium">Are you sure you want to log out from the Campus Clinic System?</p>
+              
+              <div className="grid grid-cols-2 gap-4 mt-8">
+                <Button 
+                  variant="ghost" 
+                  className="h-12 font-bold"
+                  onClick={() => setIsLogoutConfirmOpen(false)}
+                >
+                  Stay
+                </Button>
+                <Button 
+                  variant="primary" 
+                  className="h-12 font-bold bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-200"
+                  onClick={confirmLogout}
+                >
+                  Log Out
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Overlay for mobile menu */}
       {isMobileMenuOpen && (
@@ -392,7 +394,12 @@ const ProtectedLayout = ({ children, user }: { children: React.ReactNode, user: 
                size="sm" 
                variant="primary" 
                className="text-xs h-8 px-4 font-semibold"
-               onClick={() => window.location.href = '/patients?add=true'}
+               loading={isNewPatientLoading}
+               onClick={() => {
+                 setIsNewPatientLoading(true);
+                 navigate('/patients?add=true');
+                 setTimeout(() => setIsNewPatientLoading(false), 600);
+               }}
              >
                + New Patient
              </Button>

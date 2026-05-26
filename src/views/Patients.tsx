@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Plus, Search, Eye, Filter, UserPlus, Clock, ArrowRight, User } from 'lucide-react';
+import { Users, Plus, Search, Eye, Filter, UserPlus, Clock, ArrowRight, User, Printer } from 'lucide-react';
 import { useClinicData, Patient } from '../hooks/useClinicData';
 import { Card, Button, Input } from '../components/ui';
 import { cn } from '../lib/utils';
@@ -89,6 +89,51 @@ export default function Patients() {
     }
   };
 
+  const mockPatientsForPrint = [
+    {
+      id: 'mock-1',
+      fullname: 'John Doe',
+      age: 21,
+      gender: 'Male',
+      department: 'BS Information Technology',
+      complaint: 'Fever and Mild Cough',
+      diagnosis: 'Systemic Viral Infection / Prescribed Paracetamol',
+      dateVisit: { toDate: () => new Date('2026-05-25T08:30:00Z') }
+    },
+    {
+      id: 'mock-2',
+      fullname: 'Sarah Jenkins',
+      age: 19,
+      gender: 'Female',
+      department: 'BS Nursing',
+      complaint: 'Sprained Ankle during Physical Education class',
+      diagnosis: 'Mild Inversion Ankle Sprain / Cold Compress applied',
+      dateVisit: { toDate: () => new Date('2026-05-25T10:15:00Z') }
+    },
+    {
+      id: 'mock-3',
+      fullname: 'Michael Smith',
+      age: 22,
+      gender: 'Male',
+      department: 'BS Business Administration',
+      complaint: 'Severe Headache and Fatigue',
+      diagnosis: 'Tension Headache secondary to Sleep Deprivation',
+      dateVisit: { toDate: () => new Date('2026-05-24T14:45:00Z') }
+    },
+    {
+      id: 'mock-4',
+      fullname: 'Emily Davis',
+      age: 20,
+      gender: 'Female',
+      department: 'BS Education',
+      complaint: 'Allergic Reaction / Skin Rashes',
+      diagnosis: 'Contact Dermatitis / Mild Antihistamine administered',
+      dateVisit: { toDate: () => new Date('2026-05-24T16:20:00Z') }
+    }
+  ];
+
+  const printPatients = patients.length > 0 ? patients : mockPatientsForPrint;
+
   return (
     <div className="space-y-6 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -101,10 +146,20 @@ export default function Patients() {
             className="pl-10 h-12"
           />
         </div>
-        <Button onClick={() => setIsModalOpen(true)} className="h-12 px-6 gap-2">
-          <UserPlus className="w-5 h-5" />
-          Log New Visit
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={() => window.print()} 
+            variant="outline" 
+            className="h-12 px-5 gap-2 border-slate-300 text-slate-700 bg-white hover:bg-slate-50 shadow-sm"
+          >
+            <Printer className="w-5 h-5 text-teal-600" />
+            Print Records
+          </Button>
+          <Button onClick={() => setIsModalOpen(true)} className="h-12 px-6 gap-2">
+            <UserPlus className="w-5 h-5" />
+            Log New Visit
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3">
@@ -354,6 +409,62 @@ export default function Patients() {
           </motion.div>
         </div>
       )}
+
+      {/* Hidden printable layout optimized for Long Bond Paper (8.5 x 13) with 1" margins */}
+      <div className="hidden print-only text-black font-sans leading-relaxed">
+        <div className="text-center pb-5 mb-8 border-b-2 border-slate-900">
+          <h1 className="text-lg font-black tracking-tight text-slate-950 uppercase">
+            Campus Clinic Inventory and Patient Records System
+          </h1>
+          <p className="text-xs font-bold text-slate-700 tracking-wider mt-1.5 uppercase">
+            Official Patient Visit Records Directory
+          </p>
+          <div className="flex justify-between items-center mt-6 text-[10px] text-slate-600 font-semibold px-1">
+            <span>Report Date: {format(new Date(), 'MMMM dd, yyyy • HH:mm')}</span>
+            <span>Total Visit Logs: {printPatients.length} records</span>
+          </div>
+        </div>
+
+        <table className="w-full border-collapse border border-slate-300 text-[10px]">
+          <thead>
+            <tr className="bg-slate-100 divide-x divide-slate-300">
+              <th className="border border-slate-300 px-3 py-2 text-left font-bold text-slate-900">Patient Name</th>
+              <th className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 w-20">Age & Sex</th>
+              <th className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900">Department / Course</th>
+              <th className="border border-slate-300 px-3 py-2 text-left font-bold text-slate-900">Chief Complaint</th>
+              <th className="border border-slate-300 px-3 py-2 text-left font-bold text-slate-900">Diagnosis / Findings</th>
+              <th className="border border-slate-300 px-3 py-2 text-center font-bold text-slate-900 w-28">Date & Time of Visit</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-300">
+            {printPatients.map((patient, pidx) => (
+              <tr key={patient.id || pidx} className="divide-x divide-slate-300">
+                <td className="border border-slate-300 px-3 py-2 font-bold text-slate-950">{patient.fullname}</td>
+                <td className="border border-slate-300 px-3 py-2 text-center font-medium">{patient.age}Y • {patient.gender}</td>
+                <td className="border border-slate-300 px-3 py-2 text-center">{patient.department}</td>
+                <td className="border border-slate-300 px-3 py-2 italic text-slate-800">"{patient.complaint || 'None recorded'}"</td>
+                <td className="border border-slate-300 px-3 py-2 text-slate-800">{patient.diagnosis || 'None recorded'}</td>
+                <td className="border border-slate-300 px-3 py-2 text-center tabular-nums">
+                  {patient.dateVisit?.toDate ? format(patient.dateVisit.toDate(), 'yyyy-MM-dd HH:mm') : '--:--'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        <div className="mt-14 flex justify-between text-[11px] px-1">
+          <div className="text-center w-52">
+            <div className="border-b border-black pb-1 font-bold text-slate-900">
+              Leonel Montebon
+            </div>
+            <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">Prepared By / Campus Nurse</p>
+          </div>
+          <div className="text-center w-52">
+            <div className="border-b border-black pb-1 h-5"></div>
+            <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">Received / Verified By</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

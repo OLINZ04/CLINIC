@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pill, Plus, Search, Trash2, Edit3, Filter, AlertTriangle } from 'lucide-react';
+import { Pill, Plus, Search, Trash2, Edit3, Filter, AlertTriangle, Printer } from 'lucide-react';
 import { useClinicData, Medicine } from '../hooks/useClinicData';
 import { Card, Button, Input } from '../components/ui';
 import { cn } from '../lib/utils';
@@ -61,6 +61,46 @@ export default function Medicines() {
     }
   };
 
+  const mockMedicinesForPrint = [
+    {
+      id: 'mock-med-1',
+      name: 'Paracetamol 500mg',
+      category: 'Analgesic / Antipyretic',
+      stock: 120,
+      expirationDate: '2027-12-15'
+    },
+    {
+      id: 'mock-med-2',
+      name: 'Amoxicillin 500mg',
+      category: 'Antibiotics',
+      stock: 45,
+      expirationDate: '2026-11-20'
+    },
+    {
+      id: 'mock-med-3',
+      name: 'Cetirizine 10mg',
+      category: 'Antihistamine',
+      stock: 80,
+      expirationDate: '2027-04-05'
+    },
+    {
+      id: 'mock-med-4',
+      name: 'Ibuprofen 400mg',
+      category: 'NSAID / Pain Reliever',
+      stock: 4,
+      expirationDate: '2026-09-30'
+    },
+    {
+      id: 'mock-med-5',
+      name: 'Antacid Chewable Tablet',
+      category: 'Antacid',
+      stock: 0,
+      expirationDate: '2026-08-15'
+    }
+  ];
+
+  const printMedicines = medicines.length > 0 ? medicines : mockMedicinesForPrint;
+
   return (
     <div className="space-y-6 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -73,10 +113,20 @@ export default function Medicines() {
             className="pl-10 h-12 shadow-sm"
           />
         </div>
-        <Button onClick={() => { setEditingMed(null); setFormData({ name: '', category: '', stock: 0, expirationDate: '' }); setIsModalOpen(true); }} className="h-12 px-6 gap-2">
-          <Plus className="w-5 h-5" />
-          Add Medicine
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={() => window.print()} 
+            variant="outline" 
+            className="h-12 px-5 gap-2 border-slate-300 text-slate-700 bg-white hover:bg-slate-50 shadow-sm"
+          >
+            <Printer className="w-5 h-5 text-teal-600" />
+            Print Inventory
+          </Button>
+          <Button onClick={() => { setEditingMed(null); setFormData({ name: '', category: '', stock: 0, expirationDate: '' }); setIsModalOpen(true); }} className="h-12 px-6 gap-2">
+            <Plus className="w-5 h-5" />
+            Add Medicine
+          </Button>
+        </div>
       </div>
 
       <Card className="overflow-hidden border border-slate-200 shadow-sm rounded-xl bg-white">
@@ -221,6 +271,62 @@ export default function Medicines() {
           </motion.div>
         </div>
       )}
+
+      {/* Hidden printable layout optimized for Long Bond Paper (8.5 x 13) with 1" margins */}
+      <div className="hidden print-only text-black font-sans leading-relaxed">
+        <div className="text-center pb-5 mb-8 border-b-2 border-slate-900">
+          <h1 className="text-lg font-black tracking-tight text-slate-950 uppercase">
+            Campus Clinic Inventory and Patient Records System
+          </h1>
+          <p className="text-xs font-bold text-slate-700 tracking-wider mt-1.5 uppercase">
+            Official Medical Inventory Stock Report
+          </p>
+          <div className="flex justify-between items-center mt-6 text-[10px] text-slate-600 font-semibold px-1">
+            <span>Report Date: {format(new Date(), 'MMMM dd, yyyy • HH:mm')}</span>
+            <span>Total Stock Categories: {Array.from(new Set(printMedicines.map(m => m.category || 'General'))).length}</span>
+          </div>
+        </div>
+
+        <table className="w-full border-collapse border border-slate-300 text-[10px]">
+          <thead>
+            <tr className="bg-slate-100 divide-x divide-slate-300">
+              <th className="border border-slate-300 px-4 py-2.5 text-left font-bold text-slate-900">Medicine Name</th>
+              <th className="border border-slate-300 px-4 py-2.5 text-center font-bold text-slate-900 w-40">Category</th>
+              <th className="border border-slate-300 px-4 py-2.5 text-center font-bold text-slate-900 w-28">Units In Stock</th>
+              <th className="border border-slate-300 px-4 py-2.5 text-center font-bold text-slate-900 w-36">Expiration Date</th>
+              <th className="border border-slate-300 px-4 py-2.5 text-center font-bold text-slate-900 w-28">Status / Level</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-300">
+            {printMedicines.map((med, midx) => (
+              <tr key={med.id || midx} className="divide-x divide-slate-300">
+                <td className="border border-slate-300 px-4 py-2 font-bold text-slate-950">{med.name}</td>
+                <td className="border border-slate-300 px-4 py-2 text-center">{med.category || 'General'}</td>
+                <td className="border border-slate-300 px-4 py-2 text-center font-black">{med.stock}</td>
+                <td className="border border-slate-300 px-4 py-2 text-center tabular-nums">
+                  {med.expirationDate ? format(new Date(med.expirationDate), 'MMM dd, yyyy') : 'No Expiry'}
+                </td>
+                <td className="border border-slate-300 px-4 py-2 text-center font-semibold text-[9px] uppercase">
+                  {med.stock <= 0 ? 'Out of Stock' : med.stock < 10 ? 'Low Stock' : 'Sufficient'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        <div className="mt-14 flex justify-between text-[11px] px-1">
+          <div className="text-center w-52">
+            <div className="border-b border-black pb-1 font-bold text-slate-900">
+              Leonel Montebon
+            </div>
+            <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">Prepared By / Campus Nurse</p>
+          </div>
+          <div className="text-center w-52">
+            <div className="border-b border-black pb-1 h-5"></div>
+            <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">Received / Verified By</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

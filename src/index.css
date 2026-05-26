@@ -1,12 +1,232 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Redefining Tailwind's blue palette into a premium modern clinical Teal & Emerald Medical color space */
+  --color-blue-50: #f2faf9;      /* Crystal clinical mint tone */
+  --color-blue-100: #daf1ee;     /* Clear therapeutic ice mint */
+  --color-blue-200: #b5e4dd;     /* Clean sage tint */
+  --color-blue-300: #88d4ca;     /* Seafoam medical green */
+  --color-blue-400: #49bfae;     /* Medical aqua */
+  --color-blue-500: #14b8a6;     /* Refreshing medical mint */
+  --color-blue-600: #0d9488;     /* Core clinical teal */
+  --color-blue-700: #0f766e;     /* High-contrast clinic button green */
+  --color-blue-800: #115e59;     /* Deep spruce pine green */
+  --color-blue-900: #134e4a;     /* Deepest clinical slate pine */
 }
 
 @layer base {
   body {
-    @apply font-sans text-slate-900 bg-slate-50 antialiased;
+    @apply font-sans antialiased text-slate-800 bg-[#f4f7f6]; /* Soft linen light gray-green canvas */
+    letter-spacing: -0.01em;
   }
+
+  /* Make scrollbars thin and stylish */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* Custom CSS to inject luxurious premium touch without code changes */
+
+/* Transform the sidebar background from dark blue #0f172a to an incredibly luxurious dark clinical pine slate with glassmorphism */
+aside, [class*="bg-[#0f172a]"] {
+  background: linear-gradient(180deg, #091a1a 0%, #051010 100%) !important;
+  border-right-color: rgba(20, 184, 166, 0.1) !important;
+}
+
+aside a:hover, aside [class*="hover:bg-slate-800"]:hover {
+  background-color: rgba(20, 184, 166, 0.08) !important;
+  color: #fff !important;
+}
+
+/* Update sidebar borders */
+[class*="border-slate-800"] {
+  border-color: rgba(20, 184, 166, 0.12) !important;
+}
+
+/* Transform focus states to clean medical teal focus ring */
+input:focus, select:focus, textarea:focus, [class*="focus:ring-blue-500"]:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15) !important;
+  border-color: #0d9488 !important;
+}
+
+/* Make card shadows softer, more clinical and premium */
+[class*="shadow-sm"], .shadow-sm {
+  box-shadow: 0 4px 20px -2px rgba(13, 148, 136, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Enhance inputs rendering */
+input, select {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Enhance tables */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  background-color: #f8faf9 !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Custom active tags and badges */
+[class*="text-rose-600"] {
+  color: #e11d48 !important;
+}
+
+[class*="bg-rose-50"] {
+  background-color: #fff1f2 !important;
+}
+
+/* Beautiful hover transitions on all buttons, forms & list items */
+button, .transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Enhance login image cover overlay for highly polished healthcare portal */
+[class*="bg-slate-900/40"] {
+  background-color: rgba(9, 26, 26, 0.45) !important;
+}
+
+[class*="bg-gradient-to-t"] {
+  background-image: linear-gradient(to top, rgba(9, 26, 26, 0.85), rgba(9, 26, 26, 0.3), rgba(9, 26, 26, 0.2)) !important;
+}
+
+/* Glassmorphism treatment for medical modals to elevate visual depth */
+[class*="bg-slate-900/80"], [class*="bg-slate-900/60"] {
+  background-color: rgba(6, 20, 20, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Rounded, well-padded modern cards in clinic workspace */
+[class*="bg-white"] {
+  background-color: #ffffff;
+  border-radius: 1rem !important;
+}
+
+/* Accentuate active navigation items in sidebar with subtle pulse glow */
+[class*="bg-blue-600/10"] {
+  background-color: rgba(13, 148, 136, 0.12) !important;
+  color: #ffffff !important;
+  border-right-color: #0d9488 !important;
+}
+
+/* Clean clinical system badge status colors */
+[class*="bg-emerald-100"] {
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+[class*="bg-red-100"] {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+[class*="bg-orange-100"] {
+  background-color: #fff7ed !important;
+  color: #c2410c !important;
+}
+
+/* Print CSS Styles for Long Bond Paper (8.5 in x 13 in) with 1" margins */
+@media print {
+  @page {
+    size: 8.5in 13in !important;
+    margin: 1in !important;
+  }
+  
+  html, body, #root {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif !important;
+  }
+
+  /* Hide app screen modules and interactive components */
+  aside, 
+  header, 
+  button, 
+  input, 
+  select, 
+  textarea, 
+  .no-print, 
+  [class*="no-print"],
+  [class*="fixed"],
+  [class*="shadow-lg"] {
+    display: none !important;
+  }
+
+  /* Expand the main body area for printing */
+  main, .flex, .flex-1, .grid, [class*="overflow-y-auto"] {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background-color: transparent !important;
+  }
+
+  /* Custom components hidden on UI but active on print */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Print Specific Table Styling */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+  
+  tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  td, th {
+    border: 1px solid #cbd5e1 !important;
+    color: #000000 !important;
+    padding: 8px 10px !important;
+  }
+}
+
+/* Remove default up/down scroll spin buttons from number inputs for clean manual typing */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield !important;
 }

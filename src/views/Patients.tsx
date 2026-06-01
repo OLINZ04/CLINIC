@@ -23,6 +23,27 @@ export default function Patients() {
     if (searchParam) setSearchTerm(searchParam);
   }, [searchParams]);
 
+  useEffect(() => {
+    const isPrintMode = searchParams.get('print') === 'true';
+    if (isPrintMode && !loading && patients.length > 0) {
+      const timer = setTimeout(() => {
+        window.focus();
+        window.print();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams, loading, patients]);
+
+  const handlePrint = () => {
+    const isInIframe = window.self !== window.top;
+    if (isInIframe) {
+      window.open(window.location.origin + window.location.pathname + '?print=true', '_blank');
+    } else {
+      window.focus();
+      window.print();
+    }
+  };
+
   // Form State
   const [formData, setFormData] = useState({
     fullname: '',
@@ -136,7 +157,9 @@ export default function Patients() {
 
   return (
     <div className="space-y-6 pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Interactive Desktop / Mobile Content */}
+      <div className="no-print space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
@@ -148,7 +171,7 @@ export default function Patients() {
         </div>
         <div className="flex items-center gap-3">
           <Button 
-            onClick={() => window.print()} 
+            onClick={handlePrint} 
             variant="outline" 
             className="h-12 px-5 gap-2 border-slate-300 text-slate-700 bg-white hover:bg-slate-50 shadow-sm"
           >
@@ -409,6 +432,7 @@ export default function Patients() {
           </motion.div>
         </div>
       )}
+      </div>
 
       {/* Hidden printable layout optimized for Long Bond Paper (8.5 x 13) with 1" margins */}
       <div className="hidden print-only text-black font-sans leading-relaxed">

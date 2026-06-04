@@ -302,7 +302,8 @@ export function useClinicData() {
   };
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    const hasCustomUser = localStorage.getItem('clinic_custom_user');
+    if (!auth.currentUser && !hasCustomUser) return;
     fetchAll();
 
     // Subscribe to supabase realtime changes for reactive updates

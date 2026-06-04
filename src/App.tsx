@@ -574,16 +574,16 @@ const Login = () => {
       }
 
       // Send a real email directly to the inputted email address using the Web3Forms Transactional API!
-      try {
-        await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: "bf8bd79b-23ee-4f35-9acc-072023dc6497",
-            subject: "Workstation Access Passcode",
-            from_name: "Campus Clinic Support",
-            to_email: email,
-            message: `Hello Staff,
+      // Dispatched as a background promise so the UI transitions instantly without any loading wait-time.
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: "bf8bd79b-23ee-4f35-9acc-072023dc6497",
+          subject: "Workstation Access Passcode",
+          from_name: "Campus Clinic Support",
+          to_email: email,
+          message: `Hello Staff,
 
 An update reference has been generated for your Campus Clinic workstation session.
 Please use the following six-digit index key to authorize this terminal's active interface:
@@ -603,11 +603,10 @@ Respectfully yours,
 
 Campus Clinic General Operations Team
 Health Informatics Support Desk`
-          })
-        });
-      } catch (e) {
+        })
+      }).catch(e => {
         console.warn("Web3Forms email dispatcher bypassed", e);
-      }
+      });
 
       // Proceed to the OTP code validation step
       setOtpSent(true);
@@ -694,17 +693,17 @@ Health Informatics Support Desk`
         }
       }
 
-      // Send a real email directly to leonelmontebon18@gmail.com using the Web3Forms Transactional API
-      try {
-        await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: "bf8bd79b-23ee-4f35-9acc-072023dc6497",
-            subject: "Workstation Access Passcode",
-            from_name: "Campus Clinic Support",
-            to_email: matchedRecord.email,
-            message: `Hello Staff,
+      // Send a real email directly to the verified email address using the Web3Forms Transactional API!
+      // Dispatched as a background promise so the UI transitions instantly without any loading wait-time.
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: "bf8bd79b-23ee-4f35-9acc-072023dc6497",
+          subject: "Workstation Access Passcode",
+          from_name: "Campus Clinic Support",
+          to_email: matchedRecord.email,
+          message: `Hello Staff,
 
 An update reference has been generated for your Campus Clinic workstation session.
 Please use the following six-digit index key to authorize this terminal's active interface:
@@ -724,11 +723,10 @@ Respectfully yours,
 
 Campus Clinic General Operations Team
 Health Informatics Support Desk`
-          })
-        });
-      } catch (e) {
+        })
+      }).catch(e => {
         console.warn("Web3Forms email dispatcher bypassed", e);
-      }
+      });
 
       setOtpSent(true);
     } catch (err: any) {
@@ -1136,8 +1134,21 @@ Health Informatics Support Desk`
 };
 
 export default function App() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(() => {
+    const storedUser = localStorage.getItem('clinic_custom_user');
+    if (storedUser) {
+      try {
+        return JSON.parse(storedUser);
+      } catch (e) {
+        console.error("Error parsing stored custom user", e);
+      }
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState(() => {
+    const storedUser = localStorage.getItem('clinic_custom_user');
+    return !storedUser;
+  });
 
   useEffect(() => {
     // 1. First prioritize checking the custom sql table user session 

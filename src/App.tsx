@@ -67,8 +67,10 @@ const Navbar = ({ user }: { user: User }) => {
         <img src={user.photoURL || ''} alt="avatar" className="w-9 h-9 rounded-full border border-slate-200" />
         <Button variant="ghost" size="sm" onClick={() => {
           localStorage.removeItem('clinic_custom_user');
-          logout().then(() => {
-            window.location.reload();
+          logout().catch((err) => {
+            console.warn("Sign out bypassed:", err);
+          }).finally(() => {
+            window.location.href = '/';
           });
         }} className="ml-2">
           <LogOut className="w-4 h-4 mr-2" />
@@ -92,8 +94,10 @@ const ProtectedLayout = ({ children, user }: { children: React.ReactNode, user: 
   const confirmLogout = () => {
     setIsLogoutConfirmOpen(false);
     localStorage.removeItem('clinic_custom_user');
-    logout().then(() => {
-      window.location.reload();
+    logout().catch((err) => {
+      console.warn("Sign out bypassed:", err);
+    }).finally(() => {
+      window.location.href = '/';
     });
   };
 
@@ -434,7 +438,7 @@ const ProtectedLayout = ({ children, user }: { children: React.ReactNode, user: 
   );
 };
 
-const Login = () => {
+const Login = ({ onLoginSuccess }: { onLoginSuccess?: (user: any) => void }) => {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -806,7 +810,11 @@ Health Informatics Support Desk`
 
       localStorage.setItem('clinic_custom_user', JSON.stringify(mockUser));
       window.dispatchEvent(new Event('storage'));
-      window.location.reload();
+      if (onLoginSuccess) {
+        onLoginSuccess(mockUser);
+      } else {
+        window.location.reload();
+      }
     } catch (err: any) {
       setErrorMsg(err.message || "An authentication error occurred.");
       setIsSigningIn(false);
@@ -1182,7 +1190,7 @@ export default function App() {
     </div>
   );
 
-  if (!user) return <Login />;
+  if (!user) return <Login onLoginSuccess={(u) => setUser(u)} />;
 
   return (
     <Router>

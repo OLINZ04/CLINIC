@@ -20,6 +20,7 @@ import {
   EyeOff,
   User as UserIcon
 } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { auth, signInWithGoogle, logout } from './lib/firebase';
 import { supabase } from './lib/supabase';
 import { Button, Card, Input } from './components/ui';
@@ -1202,6 +1203,7 @@ export default function App() {
           <Route path="/prescriptions" element={<Prescriptions />} />
         </Routes>
       </ProtectedLayout>
+      <SpeedInsights />
     </Router>
   );
 }
